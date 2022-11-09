@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -7,49 +7,44 @@ import { ImSearch } from 'react-icons/im';
 
 import { Header, Form, Button, Input, SpanSearch } from './Searchbar.styled';
 
-export class Searchbar extends Component {
-  state = {
-    queryNew: '',
+export function Searchbar({ onSubmit }) {
+  const [queryNew, setQueryNew] = useState('');
+
+  const handleNameChange = event => {
+    setQueryNew(event.currentTarget.value.toLowerCase());
+  };
+  const reset = () => {
+    setQueryNew('');
   };
 
-  handleNameChange = event => {
-    this.setState({ queryNew: event.currentTarget.value.toLowerCase() });
-  };
-  reset = () => {
-    this.setState({ queryNew: '' });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if (!this.state.queryNew) {
+    if (!queryNew) {
       return toast.error('Write keyword for search 🧐');
     }
-    this.props.onSubmit(this.state.queryNew);
-    this.reset();
+    onSubmit(queryNew);
+    reset();
   };
-
-  render() {
-    return (
-      <Header>
-        <Form onSubmit={this.handleSubmit}>
-          <Button type="submit">
-            <SpanSearch>
-              <ImSearch />
-            </SpanSearch>
-          </Button>
-          <Input
-            type="text"
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={this.state.queryNew}
-            onChange={this.handleNameChange}
-          />
-        </Form>
-      </Header>
-    );
-  }
+  return (
+    <Header>
+      <Form onSubmit={handleSubmit}>
+        <Button type="submit">
+          <SpanSearch>
+            <ImSearch />
+          </SpanSearch>
+        </Button>
+        <Input
+          type="text"
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={queryNew}
+          onChange={handleNameChange}
+        />
+      </Form>
+    </Header>
+  );
 }
 
 Searchbar.propTypes = {
